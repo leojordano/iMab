@@ -1,8 +1,9 @@
 using System.Security.Cryptography;
+using System.Text; 
 using api.Interfaces;
 using api.Models;
 using api.Db;
-using System.Text;
+using api.ViewModels;
 
 namespace api.Repositories {
     public class UserRepository : IUserRepository 
@@ -13,14 +14,14 @@ namespace api.Repositories {
             _context.Users.Add(user);
             _context.SaveChanges();
         }
-        public UserValidation CheckIfUserIsValid(string Name, string Email)
+        public UserValidation CheckIfUserIsValid(UserViewModel userViewModel)
         {
 
-            if(Name == "" || Email == "") { 
+            if(userViewModel.Name == "" || userViewModel.Email == "" || userViewModel.Password == "") { 
                 return new UserValidation("Preencha todos os campos", false);
             }
 
-            var checkIfUserExist = _context.Users.Any(u => u.Name == Name || u.Email == Email);
+            var checkIfUserExist = _context.Users.Any(u => u.Name == userViewModel.Name || u.Email == userViewModel.Email);
 
             if(checkIfUserExist) return new UserValidation("Usuario já cadastrado", false);
             

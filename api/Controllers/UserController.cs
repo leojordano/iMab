@@ -23,14 +23,10 @@ namespace api.Controllers
         public IActionResult Register(UserViewModel userViewModel)
         {
             try {
-                var userIsValid = _userRepository.CheckIfUserIsValid(userViewModel.Name, userViewModel.Email); 
+                var userIsValid = _userRepository.CheckIfUserIsValid(userViewModel);
                 
                 if(!userIsValid.IsValid) {
                     return NotFound(userIsValid.Message);
-                }
-
-                if(userViewModel.Password == "") {
-                    return NotFound("O campo de senha não pode ser vazio!");
                 }
 
                 string HashPassword = _userRepository.EncryptPassword(userViewModel.Password);
