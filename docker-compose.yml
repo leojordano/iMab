@@ -1,0 +1,33 @@
+version: '3.8'
+
+networks: 
+    imab-network:
+        driver: bridge
+
+services:
+  front:
+    build: 
+      context: .
+      target: node
+    ports:
+      - "3000:3000"
+    container_name: imab-ui
+    volumes:
+      - ./front:/usr/src/app/front
+      - /usr/src/app/front/node_modules
+    networks:
+      - imab-network
+
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: imab_root
+      MYSQL_DATABASE: imab_db
+      MYSQL_USER: imab_user
+      MYSQL_PASSWORD: imab_password
+    volumes:
+      - ./db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - imab-network

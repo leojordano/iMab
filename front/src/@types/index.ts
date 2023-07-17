@@ -1,0 +1,1 @@
+export { type IVariantType } from "./_component"
