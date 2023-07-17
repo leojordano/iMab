@@ -23,8 +23,14 @@ namespace api.Controllers
         public IActionResult Register(UserViewModel userViewModel)
         {
             try {
-                if(_userRepository.CheckIfUserIsValid(userViewModel.Name, userViewModel.Email)) {
-                    return NotFound("Usuario já cadastrado!");
+                var userIsValid = _userRepository.CheckIfUserIsValid(userViewModel.Name, userViewModel.Email); 
+                
+                if(!userIsValid.IsValid) {
+                    return NotFound(userIsValid.Message);
+                }
+
+                if(userViewModel.Password == "") {
+                    return NotFound("O campo de senha não pode ser vazio!");
                 }
 
                 string HashPassword = _userRepository.EncryptPassword(userViewModel.Password);
@@ -33,13 +39,15 @@ namespace api.Controllers
                     userViewModel.Name, 
                     userViewModel.Email,
                     HashPassword,
-                    userViewModel.AccessLevel,
-                    userViewModel.UserProfile
+                    userViewModel.AccessLevel
                 );
 
                 _userRepository.Register(user);
 
-                return Ok();
+                return Ok(new {
+                    message = userIsValid.Message,
+                    user
+                });
             } catch(ArgumentException err) {
                 return BadRequest(err.Message);
             }

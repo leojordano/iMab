@@ -11,16 +11,20 @@ namespace api.Repositories {
         public void Register(User user)
         {
             _context.Users.Add(user);
+            _context.SaveChanges();
         }
-        public bool CheckIfUserIsValid(string Name, string Email)
+        public UserValidation CheckIfUserIsValid(string Name, string Email)
         {
-            if(Name == "" || Email == "") return false;
+
+            if(Name == "" || Email == "") { 
+                return new UserValidation("Preencha todos os campos", false);
+            }
 
             var checkIfUserExist = _context.Users.Any(u => u.Name == Name || u.Email == Email);
 
-            if(checkIfUserExist) return false;
+            if(checkIfUserExist) return new UserValidation("Usuario já cadastrado", false);
             
-            return true;
+            return new UserValidation("Usuario cadastrado com sucesso!", true);
         }
         public User Login()
         {

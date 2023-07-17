@@ -15,7 +15,7 @@ namespace api.Models {
         public string UserProfile { get; set; }
         public AccessLevelEnum Roles { get; set; }
 
-        public User(string name, string Email, string Password, AccessLevelEnum roles, string UserProfile)
+        public User(string name, string Email, string Password, AccessLevelEnum roles, string UserProfile = "")
         {
             this.Name = name;
             this.Email = Email;
