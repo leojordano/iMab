@@ -20,7 +20,7 @@ namespace api.Controllers
 
         [HttpPost]
         [Route("register")]
-        [AllowAnonymous]
+        [Authorize]
         public IActionResult Register(UserViewModel userViewModel)
         {
             try {
