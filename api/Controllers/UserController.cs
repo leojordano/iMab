@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using api.ViewModels;
 using api.Interfaces;
 using api.Models;
+using api.Services;
 using api.Enums;
 
 namespace api.Controllers
@@ -23,7 +24,7 @@ namespace api.Controllers
         public IActionResult Register(UserViewModel userViewModel)
         {
             try {
-                var userIsValid = _userRepository.CheckIfUserIsValid(userViewModel);
+                var userIsValid = _userRepository.CheckIfUserIsValidOnRegister(userViewModel);
                 
                 if(!userIsValid.IsValid) {
                     return NotFound(userIsValid.Message);
@@ -47,6 +48,33 @@ namespace api.Controllers
             } catch(ArgumentException err) {
                 return BadRequest(err.Message);
             }
+        }
+
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public IActionResult Login(LoginViewModel data)
+        {
+            var userIsValid = _userRepository.CheckIfUserIsValidOnLogin(data);
+
+            if(!userIsValid.IsValid) {
+                return NotFound(userIsValid.Message);
+            }
+
+            var user = _userRepository.GetUserByEmail(data.Email);
+            var decryptPassword = _userRepository.DecryptPassword(user.Password);
+
+            if(data.Password != decryptPassword) {
+                return NotFound("Senha incorreta!");
+            }
+            
+            user.Password = "";
+            var token = TokenService.GenerateToken(user);
+            
+            return Ok(new {
+                user,
+                token
+            });
         }
 
         [HttpGet]

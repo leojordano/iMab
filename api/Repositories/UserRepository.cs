@@ -9,12 +9,29 @@ namespace api.Repositories {
     public class UserRepository : IUserRepository 
     {
         private readonly MariaDbContext _context = new MariaDbContext();
+        
+        #region Routes
         public void Register(User user)
         {
             _context.Users.Add(user);
             _context.SaveChanges();
         }
-        public UserValidation CheckIfUserIsValid(UserViewModel userViewModel)
+        public User Login()
+        {
+            return _context.Users.First();
+        }
+        #endregion
+
+        #region Manipulations
+        public User GetUserByEmail(string email)
+        {   
+            return _context.Users.First(u => u.Email == email);
+;
+        }
+        #endregion
+
+        #region Utils
+        public UserValidation CheckIfUserIsValidOnRegister(UserViewModel userViewModel)
         {
 
             if(userViewModel.Name == "" || userViewModel.Email == "" || userViewModel.Password == "") { 
@@ -27,11 +44,19 @@ namespace api.Repositories {
             
             return new UserValidation("Usuario cadastrado com sucesso!", true);
         }
-        public User Login()
+        public UserValidation CheckIfUserIsValidOnLogin(LoginViewModel loginViewModel)
         {
-            return _context.Users.First();
+
+            if(loginViewModel.Email == "" || loginViewModel.Password == "") { 
+                return new UserValidation("Preencha todos os campos", false);
+            }
+
+            var checkIfUserExist = _context.Users.Any(u => u.Email == loginViewModel.Email);
+
+            if(!checkIfUserExist) return new UserValidation("Usuario não encontrado!", false);
+            
+            return new UserValidation("Usuario encontrado!", true);
         }
-    
         public string EncryptPassword(string password)
         {
             if(password == null) throw new ArgumentNullException("password");
@@ -58,5 +83,6 @@ namespace api.Repositories {
             byte[] decrypted = ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
             return Encoding.Unicode.GetString(decrypted);
         }
+        #endregion
     }
 }
