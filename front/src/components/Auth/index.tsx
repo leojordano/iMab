@@ -15,9 +15,6 @@ const publicPaths: string[] = [
 const AuthController = () => {
     const auth = useAuth()
     const path = usePathname()
-
-    console.log(path)
-    console.log(auth.userIsAuthenticated)
     
     useEffect(() => {
         if(!auth.userIsAuthenticated && privatePaths.includes(path)) {

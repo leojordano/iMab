@@ -4,7 +4,7 @@ interface IInput {
     placeholder?: string
     className?: string
     name: string
-    value?: string
+    defaultValue?: string
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 

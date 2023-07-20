@@ -4,6 +4,7 @@ import styled from "styled-components";
 import * as I from "@/components/Inputs"
 import * as L from "@/components/Line"
 import * as B from "@/components/Button"
+import * as A from "@/components/Alert"
 
 const Container = styled.div`
     width: 100%;
@@ -38,6 +39,8 @@ const Input = styled(I.Input)`
 const Line = styled(L.LineBlue)`
 `;
 
+const Alert = styled(A.Alert)``;
+
 const Button = styled(B.Button)``;
 
-export { Container, Logo, FormCard, Input, Line, Button }
+export { Container, Logo, FormCard, Input, Line, Button, Alert }
